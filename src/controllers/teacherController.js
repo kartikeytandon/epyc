@@ -2,6 +2,7 @@ const axios = require("axios");
 const Teacher = require("../models/Teacher");
 
 const onboardTeacher = async (req, res) => {
+    // console.log(req.body)
   const {
     email,
     phone,
@@ -30,10 +31,8 @@ const onboardTeacher = async (req, res) => {
         email,
         phone,
         type: "route",
-        reference_id,
         legal_business_name,
         business_type,
-        contact_name,
         profile: {
           category,
           subcategory,
@@ -62,11 +61,15 @@ const onboardTeacher = async (req, res) => {
     );
 
     const account_id = linkedAccountResponse.data.id; 
+    console.log("Linked Account Response:", linkedAccountResponse.data);
+
+    console.log("Reached here")
 
     const stakeholderResponse = await axios.post(
       `https://api.razorpay.com/v2/accounts/${account_id}/stakeholders`,
       {
         name: contact_name,
+        email,
         addresses: {
           residential: {
             street: street1,
@@ -77,7 +80,7 @@ const onboardTeacher = async (req, res) => {
           },
         },
         kyc: {
-          pan,
+          pan: "AVOPB1111K",
         },
         notes: {
           random_key_by_partner: "random_value",
@@ -90,6 +93,7 @@ const onboardTeacher = async (req, res) => {
         },
       }
     );
+    
 
     const productConfigResponse = await axios.post(
       `https://api.razorpay.com/v2/accounts/${account_id}/products`,
@@ -105,8 +109,11 @@ const onboardTeacher = async (req, res) => {
       }
     );
 
-    const updateConfigResponse = await axios.put(
-      `https://api.razorpay.com/v2/accounts/${account_id}/products`,
+    console.log("Reached here too")
+    // console.log(productConfigResponse.data.id)
+    const product_id = productConfigResponse.data.id
+    const updateConfigResponse = await axios.patch(
+      `https://api.razorpay.com/v2/accounts/${account_id}/products/${product_id}`,
       {
         settlements: {
           account_number,
@@ -123,12 +130,16 @@ const onboardTeacher = async (req, res) => {
       }
     );
 
+    console.log("Reached here too wow")
+
     const teacher = await Teacher.create({
       name: contact_name,
       email,
       contact: phone,
       razorpayAccountId: account_id,
     });
+
+    console.log("Reached here too wow wow")
 
     res.status(201).json({
       message: "Teacher onboarded successfully",

@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const TeacherSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  contact: { type: String, required: true },
+  name: { type: String },
+  email: { type: String, unique: true },
+  contact: { type: String },
 
   razorpayAccountId: { type: String }, 
   referenceId: { type: String }, 
@@ -12,22 +12,24 @@ const TeacherSchema = new mongoose.Schema({
   productConfigured: { type: Boolean, default: false },
 
   address: {
-    street1: { type: String, required: true },
+    street1: { type: String },
     street2: { type: String },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    postalCode: { type: String, required: true },
-    country: { type: String, required: true, default: "IN" }, 
+    city: { type: String },
+    state: { type: String },
+    postalCode: { type: String },
+    country: { type: String, default: "IN" }, 
   },
 
-  pan: { type: String, required: true },
+  pan: { type: String },
   gst: { type: String }, 
-
-  bankAccount: {
-    accountNumber: { type: String, required: true },
-    ifscCode: { type: String, required: true },
-    beneficiaryName: { type: String, required: true },
-  },
+  accountNumber: { type: String },
+  ifscCode: { type: String },
+  beneficiaryName: { type: String },
+//   bankAccount: {
+//     accountNumber: { type: String },
+//     ifscCode: { type: String },
+//     beneficiaryName: { type: String },
+//   },
 
   createdAt: { type: Date, default: Date.now },
 });
